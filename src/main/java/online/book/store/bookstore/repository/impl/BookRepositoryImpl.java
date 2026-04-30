@@ -1,6 +1,7 @@
 package online.book.store.bookstore.repository.impl;
 
 import java.util.List;
+import online.book.store.bookstore.exception.DataProcessingException;
 import online.book.store.bookstore.model.Book;
 import online.book.store.bookstore.repository.BookRepository;
 import org.hibernate.Session;
@@ -32,7 +33,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Error saving book into DB " + book, e);
+            throw new DataProcessingException("Error saving book into DB " + book, e);
         } finally {
             if (session != null) {
                 session.close();
@@ -45,7 +46,7 @@ public class BookRepositoryImpl implements BookRepository {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("SELECT b FROM Book b",Book.class).getResultList();
         } catch (Exception e) {
-            throw new RuntimeException("Error fetching all books from DB", e);
+            throw new DataProcessingException("Error fetching all books from DB", e);
         }
     }
 }
