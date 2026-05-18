@@ -1,6 +1,7 @@
 package online.book.store.bookstore.repository.impl;
 
 import java.util.List;
+import java.util.Optional;
 import online.book.store.bookstore.exception.DataProcessingException;
 import online.book.store.bookstore.model.Book;
 import online.book.store.bookstore.repository.BookRepository;
@@ -47,6 +48,21 @@ public class BookRepositoryImpl implements BookRepository {
             return session.createQuery("SELECT b FROM Book b",Book.class).getResultList();
         } catch (Exception e) {
             throw new DataProcessingException("Error fetching all books from DB", e);
+        }
+    }
+
+    @Override
+    public Optional<Book> findById(long id) {
+        try (Session session = sessionFactory.openSession()) {
+            Book book = session.createQuery(
+                            "SELECT b FROM Book b WHERE b.id = :id",
+                            Book.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+
+            return Optional.ofNullable(book);
+        } catch (Exception e) {
+            throw new DataProcessingException("Error fetching book by id from DB", e);
         }
     }
 }
