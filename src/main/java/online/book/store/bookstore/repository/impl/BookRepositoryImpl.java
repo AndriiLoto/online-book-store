@@ -61,6 +61,8 @@ public class BookRepositoryImpl implements BookRepository {
                     .uniqueResult();
 
             return Optional.ofNullable(book);
+        } catch (Exception e) {
+            throw new DataProcessingException("Error fetching book by id from DB", e);
         }
     }
 }
