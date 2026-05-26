@@ -5,6 +5,7 @@ import online.book.store.bookstore.dto.BookDto;
 import online.book.store.bookstore.dto.CreateBookRequestDto;
 import online.book.store.bookstore.model.Book;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
@@ -12,4 +13,6 @@ public interface BookMapper {
     BookDto toBookDto(Book book);
 
     Book toModel(CreateBookRequestDto bookRequestDtoDto);
+
+    void updateBookFromDto(CreateBookRequestDto bookRequestDto, @MappingTarget Book book);
 }
