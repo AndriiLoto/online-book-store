@@ -9,7 +9,6 @@ import online.book.store.bookstore.mapper.BookMapper;
 import online.book.store.bookstore.model.Book;
 import online.book.store.bookstore.repository.BookRepository;
 import online.book.store.bookstore.service.BookService;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findById(Long id) {
-        Book book = getBook(id);
+        Book book = getBookById(id);
         return bookMapper.toBookDto(book);
     }
 
@@ -48,13 +47,13 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookDto updateById(Long id, CreateBookRequestDto requestDto) {
-        Book book = getBook(id);
+        Book book = getBookById(id);
         bookMapper.updateBookFromDto(requestDto,book);
         Book updatedBook = bookRepository.save(book);
         return bookMapper.toBookDto(updatedBook);
     }
 
-    private @NonNull Book getBook(Long id) {
+    private Book getBookById(Long id) {
         return bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found with id: " + id)
         );
