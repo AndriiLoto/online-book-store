@@ -4,11 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.book.store.bookstore.dto.BookDto;
+import online.book.store.bookstore.dto.BookSearchParameters;
 import online.book.store.bookstore.dto.CreateBookRequestDto;
 import online.book.store.bookstore.mapper.BookMapper;
 import online.book.store.bookstore.model.Book;
-import online.book.store.bookstore.repository.BookRepository;
+import online.book.store.bookstore.repository.book.BookRepository;
+import online.book.store.bookstore.repository.book.BookSpecificationBuilder;
 import online.book.store.bookstore.service.BookService;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
     @Transactional
@@ -57,5 +61,15 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found with id: " + id)
         );
+    }
+
+    @Override
+    public List<BookDto> search(BookSearchParameters bookSearchParameters) {
+        Specification<Book> bookSpecification =
+                bookSpecificationBuilder.build(bookSearchParameters);
+        return bookRepository.findAll(bookSpecification)
+                .stream()
+                .map(bookMapper::toBookDto)
+                .toList();
     }
 }
