@@ -8,14 +8,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {
+
+    private static final String AUTHOR = "author";
+
     @Override
     public String getKey() {
-        return "author";
+        return AUTHOR;
+
     }
 
     public Specification<Book> getSpecification(String[] parameters) {
         System.out.println(Arrays.toString(parameters));
         return (root, query, criteriaBuilder) ->
-                root.get("author").in(Arrays.stream(parameters).toArray());
+                root.get(AUTHOR).in(Arrays.stream(parameters).toArray());
     }
 }
