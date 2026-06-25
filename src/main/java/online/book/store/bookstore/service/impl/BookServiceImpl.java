@@ -11,6 +11,8 @@ import online.book.store.bookstore.model.Book;
 import online.book.store.bookstore.repository.book.BookRepository;
 import online.book.store.bookstore.repository.book.BookSpecificationBuilder;
 import online.book.store.bookstore.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +32,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAll() {
-        return bookRepository.findAll().stream()
-                .map(bookMapper::toBookDto)
-                .toList();
+    public Page<BookDto> findAll(Pageable pageable) {
+        return bookRepository
+                .findAll(pageable)
+                .map(bookMapper::toBookDto);
     }
 
     @Override
