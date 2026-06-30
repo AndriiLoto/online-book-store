@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: assign-admin-role
+      author: andrew
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: (SELECT id FROM users WHERE email = 'admin@admin')
+              - column:
+                  name: role_id
+                  valueComputed: (SELECT id FROM roles WHERE name = 'ADMIN')
+  - changeSet:
+      id: assign-default-role-to-roleless-users
+      author: andrew
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.id, (SELECT id FROM roles WHERE name = 'USER')
+              FROM users u
+              WHERE u.id NOT IN (SELECT user_id FROM users_roles)
