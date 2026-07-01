@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-is-deleted-to-categories
+      author: andrew
+      changes:
+        - addColumn:
+            tableName: categories
+            columns:
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

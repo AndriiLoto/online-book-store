@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.book.store.bookstore.dto.book.BookDto;
+import online.book.store.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import online.book.store.bookstore.dto.book.BookSearchParameters;
 import online.book.store.bookstore.dto.book.CreateBookRequestDto;
 import online.book.store.bookstore.service.BookService;
@@ -80,5 +81,19 @@ public class BookController {
             description = "Searches for books using specified parameters")
     public List<BookDto> search(BookSearchParameters bookSearchParameters) {
         return bookService.search(bookSearchParameters);
+    }
+
+    @GetMapping("/{id}/without-categories")
+    @Operation(summary = "Get book by id without category id",
+            description = "Returns one book by id without category id")
+    public BookDtoWithoutCategoryIds getBookDtoWithoutCategoryIds(@PathVariable Long id) {
+        return bookService.getBookDtoWithoutCategoryIds(id);
+    }
+
+    @GetMapping("/without-categories")
+    @Operation(summary = "Get all books without category id",
+            description = "Returns list of books without category id with pagination")
+    public Page<BookDtoWithoutCategoryIds> findAllWithoutCategoryIds(Pageable pageable) {
+        return bookService.findAllWithoutCategoryIds(pageable);
     }
 }

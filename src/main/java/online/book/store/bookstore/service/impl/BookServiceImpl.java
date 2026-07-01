@@ -3,6 +3,7 @@ package online.book.store.bookstore.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.book.store.bookstore.dto.book.BookDto;
+import online.book.store.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import online.book.store.bookstore.dto.book.BookSearchParameters;
 import online.book.store.bookstore.dto.book.CreateBookRequestDto;
 import online.book.store.bookstore.exception.EntityNotFoundException;
@@ -32,6 +33,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public Page<BookDto> findAll(Pageable pageable) {
         return bookRepository
                 .findAll(pageable)
@@ -39,6 +41,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookDto findById(Long id) {
         Book book = getBookById(id);
         return bookMapper.toBookDto(book);
@@ -57,6 +60,26 @@ public class BookServiceImpl implements BookService {
         bookMapper.updateBookFromDto(requestDto,book);
         Book updatedBook = bookRepository.save(book);
         return bookMapper.toBookDto(updatedBook);
+    }
+
+    @Override
+    @Transactional
+    public Page<BookDto> findByCategory(Long categoryId, Pageable pageable) {
+        return bookRepository.findAllByCategoryId(categoryId,pageable)
+                .map(bookMapper::toBookDto);
+    }
+
+    @Override
+    public BookDtoWithoutCategoryIds getBookDtoWithoutCategoryIds(Long id) {
+        Book book = getBookById(id);
+        return bookMapper.toBookDtoWithoutCategoryIds(book);
+    }
+
+    @Override
+    public Page<BookDtoWithoutCategoryIds> findAllWithoutCategoryIds(Pageable pageable) {
+        return bookRepository
+                .findAll(pageable)
+                .map(bookMapper::toBookDtoWithoutCategoryIds);
     }
 
     private Book getBookById(Long id) {
